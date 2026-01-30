@@ -9,7 +9,7 @@ const industries = [
     {
         title: 'Healthcare',
         desc: 'Automated patient outreach, lab follow-ups, HIPAA-ready infra',
-        path: '/animations/ml.json',
+        path: '/animations/heart.json',
     },
     {
         title: 'FinTech',
@@ -24,12 +24,12 @@ const industries = [
     {
         title: 'Retail',
         desc: 'Smart promotions, delivery call automation, cloud app modernization',
-        path: '/animations/cloud.json',
+        path: '/animations/ShoppingCart.json',
     },
     {
         title: 'Enterprises',
         desc: 'Policy Q&A bots, internal IT ticket intelligence, spend governance',
-        path: '/animations/aiops.json',
+        path: '/animations/enterprise.json',
     },
 ];
 
