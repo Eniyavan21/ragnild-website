@@ -152,9 +152,10 @@ export async function getBlogPosts(): Promise<BlogPost[]> {
         }
       }
 
-      // Debug logging (remove in production)
-      if (coverImage && process.env.NODE_ENV === 'development') {
+      // Debug logging
+      if (coverImage) {
         console.log(`📸 Cover image for "${post.title}":`, coverImage);
+        console.log(`🌐 STRAPI_API_URL:`, STRAPI_API_URL);
       }
 
       return {

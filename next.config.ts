@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'ragnild-website.onrender.com',
+      },
+      {
+        protocol: 'https',
         hostname: '*.cloudinary.com',
       },
     ],
