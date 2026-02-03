@@ -1,12 +1,15 @@
 // Strapi API types
+interface StrapiContentChild {
+  type: string;
+  text?: string;
+  bold?: boolean;
+  url?: string;
+  children?: StrapiContentChild[];
+}
+
 interface StrapiContentNode {
   type: string;
-  children?: Array<{
-    type: string;
-    text?: string;
-    bold?: boolean;
-    url?: string;
-  }>;
+  children?: StrapiContentChild[];
   text?: string;
 }
 
