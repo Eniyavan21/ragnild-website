@@ -8,8 +8,11 @@ export const metadata = {
     description: 'Insights and functional strategies for modern DevOps and Software Engineering.',
 };
 
-export default function BlogPage() {
-    const posts = getBlogPosts();
+// Mark as dynamic since we're fetching from external API
+export const dynamic = 'force-dynamic';
+
+export default async function BlogPage() {
+    const posts = await getBlogPosts();
 
     return (
         <main className="min-h-screen bg-white">

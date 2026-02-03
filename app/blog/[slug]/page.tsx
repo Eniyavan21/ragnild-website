@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import Image from 'next/image';
 import { getBlogPost, getBlogPosts } from '@/lib/blog';
 import ReactMarkdown from 'react-markdown';
 import { Calendar, Clock, User } from 'lucide-react';
@@ -11,8 +12,11 @@ interface BlogPostPageProps {
     }>;
 }
 
+// Mark as dynamic since we're fetching from external API
+export const dynamic = 'force-dynamic';
+
 export async function generateStaticParams() {
-    const posts = getBlogPosts();
+    const posts = await getBlogPosts();
     return posts.map((post) => ({
         slug: post.slug,
     }));
@@ -20,7 +24,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: BlogPostPageProps) {
     const { slug } = await params;
-    const post = getBlogPost(slug);
+    const post = await getBlogPost(slug);
 
     if (!post) {
         return {
@@ -36,7 +40,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
     const { slug } = await params;
-    const post = getBlogPost(slug);
+    const post = await getBlogPost(slug);
 
     if (!post) {
         notFound();
@@ -53,7 +57,21 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="pt-32 pb-20">
                 <article className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-4xl">
 
-                    {/* Back Link */}
+                    {/* Cover Image */}
+                    {post.coverImage && (
+                        <div className="relative w-full h-[400px] md:h-[500px] rounded-2xl overflow-hidden mb-12 shadow-xl">
+                            <Image
+                                src={post.coverImage}
+                                alt={post.title}
+                                fill
+                                className="object-cover"
+                                priority
+                                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                                unoptimized={process.env.NODE_ENV === 'development'}
+                            />
+                        </div>
+                    )}
+
                     {/* Header */}
                     <header className="mb-12 border-b border-gray-100 pb-12">
                         <div className="flex items-center gap-3 mb-6">

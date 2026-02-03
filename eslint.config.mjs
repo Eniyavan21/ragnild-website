@@ -12,6 +12,10 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Ignore CMS directory (Strapi generated files)
+    "cms/**",
+    // Ignore content directory (no longer used)
+    "content/**",
   ]),
 ]);
 

@@ -1,14 +1,16 @@
 'use client';
 
-import { useLottie } from 'lottie-react';
 import dynamic from 'next/dynamic';
 import { useEffect, useState } from 'react';
 
 const Lottie = dynamic(() => import('lottie-react'), { ssr: false });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type LottieAnimationData = any;
+
 type Props = {
     path?: string;
-    animationData?: any;
+    animationData?: LottieAnimationData;
     className?: string;
 };
 

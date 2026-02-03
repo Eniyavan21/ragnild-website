@@ -52,12 +52,12 @@ export default function ParticleSphere() {
             // Draw particles
             particles.forEach(p => {
                 // Rotate around Y
-                let x1 = p.x * Math.cos(rotationY) - p.z * Math.sin(rotationY);
-                let z1 = p.z * Math.cos(rotationY) + p.x * Math.sin(rotationY);
+                const x1 = p.x * Math.cos(rotationY) - p.z * Math.sin(rotationY);
+                const z1 = p.z * Math.cos(rotationY) + p.x * Math.sin(rotationY);
 
                 // Rotate around X
-                let y2 = p.y * Math.cos(rotationX) - z1 * Math.sin(rotationX);
-                let z2 = z1 * Math.cos(rotationX) + p.y * Math.sin(rotationX);
+                const y2 = p.y * Math.cos(rotationX) - z1 * Math.sin(rotationX);
+                const z2 = z1 * Math.cos(rotationX) + p.y * Math.sin(rotationX);
 
                 // Project to 2D (Perspective)
                 const distance = 400;
