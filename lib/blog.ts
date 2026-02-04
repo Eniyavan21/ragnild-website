@@ -1,58 +1,34 @@
-// Strapi API types
-interface StrapiContentChild {
-  type: string;
-  text?: string;
-  bold?: boolean;
-  url?: string;
-  children?: StrapiContentChild[];
+import { client, urlFor, BLOG_POSTS_QUERY, BLOG_POST_BY_SLUG_QUERY } from './sanity'
+import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
+
+// Sanity Portable Text types
+interface PortableTextMark {
+  _type: string;
+  _key: string;
 }
 
-interface StrapiContentNode {
-  type: string;
-  children?: StrapiContentChild[];
-  text?: string;
+interface PortableTextChild {
+  _type: string;
+  _key: string;
+  text: string;
+  marks?: string[];
 }
 
-interface StrapiMediaFormat {
-  url: string;
-  width: number;
-  height: number;
+interface PortableTextBlock {
+  _type: string;
+  _key: string;
+  style?: string;
+  children: PortableTextChild[];
+  markDefs?: PortableTextMark[];
 }
 
-interface StrapiMedia {
-  id: number;
-  url: string;
-  formats?: {
-    thumbnail?: StrapiMediaFormat;
-    small?: StrapiMediaFormat;
-    medium?: StrapiMediaFormat;
-    large?: StrapiMediaFormat;
-  };
-}
-
-interface StrapiBlogPost {
-  id: number;
-  documentId: string;
+interface SanityBlogPost {
+  _id: string;
   title: string;
   slug: string;
-  content: StrapiContentNode[];
-  coverimage?: string | StrapiMedia;
-  createdAt: string;
-  updatedAt: string;
-  publishedAt: string;
+  description: PortableTextBlock[];
+  coverimage?: SanityImageSource;
   publishedate: string;
-}
-
-interface StrapiResponse {
-  data: StrapiBlogPost[];
-  meta: {
-    pagination: {
-      page: number;
-      pageSize: number;
-      pageCount: number;
-      total: number;
-    };
-  };
 }
 
 export type BlogPost = {
@@ -67,34 +43,50 @@ export type BlogPost = {
   coverImage?: string;
 };
 
-// Strapi API base URL from environment or default to localhost
-const STRAPI_API_URL = process.env.NEXT_PUBLIC_STRAPI_API_URL || 'http://localhost:1337';
+// Convert Sanity Portable Text to Markdown
+function portableTextToMarkdown(blocks: PortableTextBlock[]): string {
+  if (!blocks || !Array.isArray(blocks)) return '';
 
-// Convert Strapi rich text content to plain text/HTML
-function convertStrapiContent(content: StrapiContentNode[]): string {
-  if (!content || !Array.isArray(content)) return '';
+  return blocks
+    .map((block) => {
+      if (!block.children) return '';
 
-  return content
-    .map((node) => {
-      if (node.type === 'paragraph' && node.children) {
-        return node.children
-          .map((child) => {
-            if (child.type === 'text') {
-              let text = child.text || '';
-              if (child.bold) {
-                text = `**${text}**`;
-              }
-              return text;
-            }
-            if (child.type === 'link' && child.url) {
-              const linkText = child.children?.map((c) => c.text).join('') || child.url;
-              return `[${linkText}](${child.url})`;
-            }
-            return '';
-          })
-          .join('');
+      // Handle different block styles
+      const style = block.style || 'normal';
+      let content = block.children
+        .map((child) => {
+          if (!child.text) return '';
+
+          let text = child.text;
+
+          // Apply marks (bold, italic, etc.)
+          if (child.marks && child.marks.length > 0) {
+            child.marks.forEach((mark) => {
+              if (mark === 'strong') text = `**${text}**`;
+              if (mark === 'em') text = `*${text}*`;
+              if (mark === 'code') text = `\`${text}\``;
+            });
+          }
+
+          return text;
+        })
+        .join('');
+
+      // Apply block-level formatting
+      switch (style) {
+        case 'h1':
+          return `# ${content}`;
+        case 'h2':
+          return `## ${content}`;
+        case 'h3':
+          return `### ${content}`;
+        case 'h4':
+          return `#### ${content}`;
+        case 'blockquote':
+          return `> ${content}`;
+        default:
+          return content;
       }
-      return '';
     })
     .join('\n\n');
 }
@@ -114,83 +106,89 @@ function calculateReadTime(content: string): string {
   return `${minutes} min read`;
 }
 
-// Fetch all blog posts from Strapi
+// Fetch all blog posts from Sanity
 export async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    const response = await fetch(`${STRAPI_API_URL}/api/blogs?populate=*`, {
+    const posts: SanityBlogPost[] = await client.fetch(BLOG_POSTS_QUERY, {}, {
       cache: 'no-store', // Disable caching for fresh data
     });
 
-    if (!response.ok) {
-      console.error('Failed to fetch blog posts:', response.statusText);
+    if (!posts || !Array.isArray(posts)) {
       return [];
     }
 
-    const data: StrapiResponse = await response.json();
-
-    if (!data.data || !Array.isArray(data.data)) {
-      return [];
-    }
-
-    const posts: BlogPost[] = data.data.map((post) => {
-      const content = convertStrapiContent(post.content);
+    const blogPosts: BlogPost[] = posts.map((post) => {
+      const content = portableTextToMarkdown(post.description || []);
       const excerpt = generateExcerpt(content);
       const readTime = calculateReadTime(content);
 
-      // Handle cover image - can be string URL or Strapi media object
+      // Handle cover image from Sanity
       let coverImage: string | undefined;
       if (post.coverimage) {
-        if (typeof post.coverimage === 'string') {
-          // If it's a string, use it directly (prepend base URL if relative)
-          coverImage = post.coverimage.startsWith('http')
-            ? post.coverimage
-            : `${STRAPI_API_URL}${post.coverimage}`;
-        } else if (typeof post.coverimage === 'object' && 'url' in post.coverimage) {
-          // If it's a Strapi media object, extract the URL
-          const url = post.coverimage.url;
-          coverImage = url.startsWith('http') ? url : `${STRAPI_API_URL}${url}`;
-        }
-      }
-
-      // Debug logging
-      if (coverImage) {
-        console.log(`📸 Cover image for "${post.title}":`, coverImage);
-        console.log(`🌐 STRAPI_API_URL:`, STRAPI_API_URL);
+        coverImage = urlFor(post.coverimage)
+          .width(1200)
+          .height(630)
+          .url();
       }
 
       return {
         slug: post.slug,
         title: post.title,
         excerpt,
-        date: post.publishedate || post.publishedAt,
+        date: post.publishedate,
         content,
-        author: 'Ragnild Team', // Default author, can be extended
+        author: 'Ragnild Team',
         readTime,
-        category: 'General', // Default category, can be extended
+        category: 'General',
         coverImage,
       };
     });
 
-    // Sort posts by date (newest first)
-    return posts.sort((a, b) => {
-      const dateA = new Date(a.date).getTime();
-      const dateB = new Date(b.date).getTime();
-      return dateB - dateA;
-    });
+    return blogPosts;
   } catch (error) {
-    console.error('Error fetching blog posts:', error);
+    console.error('Error fetching blog posts from Sanity:', error);
     return [];
   }
 }
 
-// Fetch a single blog post by slug
+// Fetch a single blog post by slug from Sanity
 export async function getBlogPost(slug: string): Promise<BlogPost | null> {
   try {
-    const posts = await getBlogPosts();
-    const post = posts.find((p) => p.slug === slug);
-    return post || null;
+    const post: SanityBlogPost | null = await client.fetch(
+      BLOG_POST_BY_SLUG_QUERY,
+      { slug },
+      { cache: 'no-store' }
+    );
+
+    if (!post) {
+      return null;
+    }
+
+    const content = portableTextToMarkdown(post.description || []);
+    const excerpt = generateExcerpt(content);
+    const readTime = calculateReadTime(content);
+
+    let coverImage: string | undefined;
+    if (post.coverimage) {
+      coverImage = urlFor(post.coverimage)
+        .width(1200)
+        .height(630)
+        .url();
+    }
+
+    return {
+      slug: post.slug,
+      title: post.title,
+      excerpt,
+      date: post.publishedate,
+      content,
+      author: 'Ragnild Team',
+      readTime,
+      category: 'General',
+      coverImage,
+    };
   } catch (error) {
-    console.error('Error fetching blog post:', error);
+    console.error('Error fetching blog post from Sanity:', error);
     return null;
   }
 }

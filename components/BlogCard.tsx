@@ -28,11 +28,11 @@ export default function BlogCard({ post }: BlogCardProps) {
 
                 <div className="p-6 flex flex-col flex-grow">
                     {/* Category Badge */}
-                    <div className="mb-4">
+                    {/* <div className="mb-4">
                         <span className="inline-flex items-center rounded-full bg-blue-50 px-3 py-1 text-xs font-medium text-blue-600 ring-1 ring-inset ring-blue-600/10">
                             {post.category}
                         </span>
-                    </div>
+                    </div> */}
 
                     {/* Title */}
                     <h3 className="mb-3 text-xl font-bold text-gray-900 transition-colors group-hover:text-[#3054fd]">
@@ -51,10 +51,10 @@ export default function BlogCard({ post }: BlogCardProps) {
                                 <Calendar className="h-3.5 w-3.5" />
                                 <span>{new Date(post.date).toLocaleDateString()}</span>
                             </div>
-                            <div className="flex items-center gap-1.5">
+                            {/* <div className="flex items-center gap-1.5">
                                 <Clock className="h-3.5 w-3.5" />
                                 <span>{post.readTime}</span>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="flex items-center gap-1 text-[#3054fd] font-medium opacity-0 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
