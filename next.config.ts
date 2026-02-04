@@ -4,18 +4,8 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '1337',
-      },
-      {
-        protocol: 'http',
-        hostname: '127.0.0.1',
-        port: '1337',
-      },
-      {
         protocol: 'https',
-        hostname: 'ragnild-website.onrender.com',
+        hostname: 'cdn.sanity.io',
       },
       {
         protocol: 'https',
