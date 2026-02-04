@@ -1,5 +1,5 @@
 import { client, urlFor, BLOG_POSTS_QUERY, BLOG_POST_BY_SLUG_QUERY } from './sanity'
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
+import type { SanityImageSource } from '@sanity/image-url'
 
 // Sanity Portable Text types
 interface PortableTextMark {
