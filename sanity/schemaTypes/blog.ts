@@ -9,6 +9,7 @@ export default defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
+      validation: (Rule) => Rule.required(),
     }),
      defineField({
       name: 'slug',
@@ -18,22 +19,26 @@ export default defineType({
         source: 'title',
         maxLength: 96,
       },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'description',
       title: 'Description',
       type: 'array',
       of: [{type: 'block'}],
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
         name: 'coverimage',
         title: 'Cover Image',
         type: 'image',
+        validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'publishedate',
       title: 'Published At',
       type: 'date',
+      validation: (Rule) => Rule.required(),
     }),
   ],
 })
