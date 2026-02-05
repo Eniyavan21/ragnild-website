@@ -1,8 +1,6 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { ArrowRight } from 'lucide-react';
-import Link from 'next/link';
 import LottieIcon from './LottieIcon';
 
 const services = [
@@ -77,11 +75,7 @@ export default function Services() {
                                 <LottieIcon path={service.path} className="w-16 h-16" />
                             </div>
                             <h4 className="text-xl font-bold text-gray-900 mb-3">{service.title}</h4>
-                            <p className="text-gray-600 mb-6 leading-relaxed">{service.desc}</p>
-
-                            <Link href="#contact" className="inline-flex items-center gap-2 text-sm font-semibold text-[#3054fd] hover:gap-3 transition-all">
-                                Learn more <ArrowRight className="w-4 h-4" />
-                            </Link>
+                            <p className="text-gray-600 leading-relaxed">{service.desc}</p>
                         </motion.div>
                     ))}
                 </div>

@@ -4,10 +4,14 @@ import { motion } from 'framer-motion';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
+import { useState } from 'react';
+import ContactModal from './ContactModal';
 
 const ParticleSphere = dynamic(() => import('./ParticleSphere'), { ssr: false });
 
 export default function Hero() {
+    const [isContactOpen, setIsContactOpen] = useState(false);
+
     return (
         <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-white">
             {/* Animated Sphere Background */}
@@ -56,13 +60,13 @@ export default function Hero() {
                     transition={{ duration: 0.5, delay: 0.3 }}
                     className="flex flex-col sm:flex-row items-center justify-center gap-4"
                 >
-                    <Link
-                        href="#contact"
+                    <button
+                        onClick={() => setIsContactOpen(true)}
                         className="h-14 px-8 rounded-full bg-[#3054fd] text-white font-bold flex items-center gap-3 hover:bg-[#2546e0] transition-all shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 hover:-translate-y-0.5"
                     >
                         Start Your Journey
                         <ArrowRight className="w-5 h-5" />
-                    </Link>
+                    </button>
                     <Link
                         href="#services"
                         className="h-14 px-8 rounded-full bg-white text-gray-700 font-bold border border-gray-200 flex items-center gap-3 hover:border-blue-200 hover:bg-blue-50/50 transition-all hover:-translate-y-0.5"
@@ -73,6 +77,8 @@ export default function Hero() {
 
 
             </div>
+
+            <ContactModal isOpen={isContactOpen} onClose={() => setIsContactOpen(false)} />
         </section>
     );
 }
