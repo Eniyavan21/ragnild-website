@@ -2,6 +2,7 @@ import { getBlogPosts } from '@/lib/blog';
 import BlogCard from '@/components/BlogCard';
 import Footer from '@/components/Footer';
 import BackButton from '@/components/ui/BackButton';
+import Pagination from '@/components/Pagination';
 
 export const metadata = {
     title: 'Blog | Ragnild',
@@ -11,8 +12,23 @@ export const metadata = {
 // Mark as dynamic since we're fetching from external API
 export const dynamic = 'force-dynamic';
 
-export default async function BlogPage() {
-    const posts = await getBlogPosts();
+const POSTS_PER_PAGE = 9;
+
+interface BlogPageProps {
+    searchParams: Promise<{ page?: string }>;
+}
+
+export default async function BlogPage({ searchParams }: BlogPageProps) {
+    const params = await searchParams;
+    const currentPage = Number(params.page) || 1;
+    const allPosts = await getBlogPosts();
+
+    // Calculate pagination
+    const totalPosts = allPosts.length;
+    const totalPages = Math.ceil(totalPosts / POSTS_PER_PAGE);
+    const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
+    const endIndex = startIndex + POSTS_PER_PAGE;
+    const posts = allPosts.slice(startIndex, endIndex);
 
     return (
         <main className="min-h-screen bg-white">
@@ -36,16 +52,25 @@ export default async function BlogPage() {
                     </div>
 
                     {/* Grid */}
-                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-12">
                         {posts.map((post) => (
                             <BlogCard key={post.slug} post={post} />
                         ))}
                     </div>
 
-                    {posts.length === 0 && (
+                    {allPosts.length === 0 && (
                         <div className="text-center py-20">
                             <p className="text-gray-500">No blog posts found yet. Check back soon!</p>
                         </div>
+                    )}
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                        <Pagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            baseUrl="/blog"
+                        />
                     )}
                 </div>
             </div>

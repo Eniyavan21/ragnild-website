@@ -18,8 +18,14 @@ interface PortableTextBlock {
   _type: string;
   _key: string;
   style?: string;
-  children: PortableTextChild[];
+  children?: PortableTextChild[];
   markDefs?: PortableTextMark[];
+  asset?: {
+    _ref: string;
+    _type: string;
+  };
+  alt?: string;
+  caption?: string;
 }
 
 interface SanityBlogPost {
@@ -43,12 +49,21 @@ export type BlogPost = {
   coverImage?: string;
 };
 
-// Convert Sanity Portable Text to Markdown
+// Convert Sanity Portable Text to Markdown (with image support)
 function portableTextToMarkdown(blocks: PortableTextBlock[]): string {
   if (!blocks || !Array.isArray(blocks)) return '';
 
   return blocks
     .map((block) => {
+      // Handle image blocks
+      if (block._type === 'image' && block.asset) {
+        const imageUrl = urlFor(block.asset).width(1200).url();
+        const alt = block.alt || 'Blog image';
+        const caption = block.caption ? `\n*${block.caption}*` : '';
+        return `![${alt}](${imageUrl})${caption}`;
+      }
+
+      // Handle text blocks
       if (!block.children) return '';
 
       // Handle different block styles
@@ -65,6 +80,8 @@ function portableTextToMarkdown(blocks: PortableTextBlock[]): string {
               if (mark === 'strong') text = `**${text}**`;
               if (mark === 'em') text = `*${text}*`;
               if (mark === 'code') text = `\`${text}\``;
+              if (mark === 'underline') text = `<u>${text}</u>`;
+              if (mark === 'strike-through') text = `~~${text}~~`;
             });
           }
 
