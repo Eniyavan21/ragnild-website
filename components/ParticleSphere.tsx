@@ -17,8 +17,16 @@ export default function ParticleSphere() {
 
         // Sphere configuration
         const particleCount = 1000;
-        // Use a larger radius to fill the view more effectively
-        const radius = Math.min(width, height) * 0.6;
+
+        // Function to calculate radius based on viewport
+        const getRadius = (w: number, h: number) => {
+            const isMobile = w < 768;
+            return isMobile
+                ? Math.max(w, h) * 0.45
+                : Math.min(w, h) * 0.6;
+        };
+
+        let radius = getRadius(width, height);
         const particles: { x: number; y: number; z: number; size: number }[] = [];
 
         // Initialize particles on a sphere surface
@@ -88,6 +96,7 @@ export default function ParticleSphere() {
         const handleResize = () => {
             width = canvas.width = canvas.parentElement?.offsetWidth || 600;
             height = canvas.height = canvas.parentElement?.offsetHeight || 600;
+            radius = getRadius(width, height);
         };
 
         window.addEventListener('resize', handleResize);

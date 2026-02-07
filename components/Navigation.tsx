@@ -33,6 +33,7 @@ export default function Navigation() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isContactOpen, setIsContactOpen] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+    const [mobileDropdownOpen, setMobileDropdownOpen] = useState<string | null>(null);
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 0);
@@ -157,22 +158,44 @@ export default function Navigation() {
                                 <nav className="flex flex-col gap-6">
                                     {navItems.map((item) => (
                                         item.dropdown ? (
-                                            <div key={item.label} className="flex flex-col gap-3">
-                                                <span className="text-lg font-medium text-gray-900">
-                                                    {item.label}
-                                                </span>
-                                                <div className="flex flex-col gap-3 pl-4">
-                                                    {item.submenu?.map((subItem) => (
-                                                        <Link
-                                                            key={subItem.label}
-                                                            href={subItem.href}
-                                                            className="text-base font-medium text-gray-600 hover:text-[#3054fd]"
-                                                            onClick={() => setIsMobileMenuOpen(false)}
+                                            <div key={item.label} className="flex flex-col">
+                                                <button
+                                                    onClick={() => setMobileDropdownOpen(
+                                                        mobileDropdownOpen === item.label ? null : item.label
+                                                    )}
+                                                    className="flex items-center justify-between text-lg font-medium text-gray-900 hover:text-[#3054fd] py-2"
+                                                >
+                                                    <span>{item.label}</span>
+                                                    <ChevronDown
+                                                        className={`w-5 h-5 transition-transform duration-200 ${
+                                                            mobileDropdownOpen === item.label ? 'rotate-180' : ''
+                                                        }`}
+                                                    />
+                                                </button>
+                                                <AnimatePresence>
+                                                    {mobileDropdownOpen === item.label && (
+                                                        <motion.div
+                                                            initial={{ height: 0, opacity: 0 }}
+                                                            animate={{ height: 'auto', opacity: 1 }}
+                                                            exit={{ height: 0, opacity: 0 }}
+                                                            transition={{ duration: 0.2 }}
+                                                            className="overflow-hidden"
                                                         >
-                                                            {subItem.label}
-                                                        </Link>
-                                                    ))}
-                                                </div>
+                                                            <div className="flex flex-col gap-3 pl-4 pt-2 pb-4">
+                                                                {item.submenu?.map((subItem) => (
+                                                                    <Link
+                                                                        key={subItem.label}
+                                                                        href={subItem.href}
+                                                                        className="text-base font-medium text-gray-600 hover:text-[#3054fd] transition-colors"
+                                                                        onClick={() => setIsMobileMenuOpen(false)}
+                                                                    >
+                                                                        {subItem.label}
+                                                                    </Link>
+                                                                ))}
+                                                            </div>
+                                                        </motion.div>
+                                                    )}
+                                                </AnimatePresence>
                                             </div>
                                         ) : (
                                             <Link
