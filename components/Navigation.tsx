@@ -102,7 +102,7 @@ export default function Navigation() {
                                         ) : (
                                             <Link
                                                 key={item.label}
-                                                href={item.href}
+                                                href={item.href || '#'}
                                                 className="text-sm font-bold text-gray-600 hover:text-[#3054fd] flex items-center gap-1 transition-colors whitespace-nowrap"
                                             >
                                                 {item.label}
@@ -177,7 +177,7 @@ export default function Navigation() {
                                         ) : (
                                             <Link
                                                 key={item.label}
-                                                href={item.href}
+                                                href={item.href || '#'}
                                                 className="text-lg font-medium text-gray-900 hover:text-[#3054fd]"
                                                 onClick={() => setIsMobileMenuOpen(false)}
                                             >
