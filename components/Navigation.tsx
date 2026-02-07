@@ -49,11 +49,11 @@ export default function Navigation() {
                         {/* Logo */}
                         <Link href="/" className="flex items-center gap-2 group mr-8">
                             <Image
-                                src="/logo.png"
+                                src="/logo4.png"
                                 alt="Ragnild Technologies"
-                                width={180}
-                                height={50}
-                                className="w-auto h-12 object-contain"
+                                width={200}
+                                height={60}
+                                className="w-auto h-16 md:h-18 lg:h-[4.5rem] object-contain transition-all"
                                 priority
                             />
                         </Link>

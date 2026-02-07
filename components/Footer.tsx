@@ -12,11 +12,11 @@ export default function Footer() {
                     <div className="col-span-1 md:col-span-2">
                         <Link href="/" className="flex items-center gap-2 mb-6">
                             <Image
-                                src="/logo.png"
+                                src="/logo4.png"
                                 alt="Ragnild Technologies"
-                                width={140}
-                                height={40}
-                                className="w-auto h-8 object-contain"
+                                width={160}
+                                height={48}
+                                className="w-auto h-11 md:h-14 object-contain transition-all"
                             />
                         </Link>
                         <p className="text-gray-500 max-w-sm mb-6">

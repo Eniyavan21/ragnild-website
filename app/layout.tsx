@@ -25,6 +25,11 @@ export const metadata: Metadata = {
   title: "Ragnild | AI-Driven Digital Engineering",
   description: "Empowering businesses with AIOps, Voice AI, and Cloud-Native solutions. Innovation tailored for impact.",
   keywords: ["AI", "AIOps", "Digital Engineering", "Cloud Consulting", "Voice AI", "Ragnild"],
+  icons: {
+    icon: '/icon.png',
+    shortcut: '/icon.png',
+    apple: '/icon.png',
+  },
 };
 
 export default function RootLayout({
