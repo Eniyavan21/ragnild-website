@@ -72,25 +72,31 @@ export default function Navigation() {
                                                 onMouseEnter={() => setOpenDropdown(item.label)}
                                                 onMouseLeave={() => setOpenDropdown(null)}
                                             >
-                                                <button className="text-sm font-bold text-gray-600 hover:text-[#3054fd] flex items-center gap-1 transition-colors whitespace-nowrap">
+                                                <button className={`text-sm font-bold flex items-center gap-1.5 transition-all whitespace-nowrap ${
+                                                    openDropdown === item.label
+                                                        ? 'text-[#3054fd]'
+                                                        : 'text-gray-600 hover:text-[#3054fd]'
+                                                }`}>
                                                     {item.label}
-                                                    <ChevronDown className="w-3 h-3 opacity-50 stroke-[3]" />
+                                                    <ChevronDown className={`w-3.5 h-3.5 stroke-[3] transition-transform duration-200 ${
+                                                        openDropdown === item.label ? 'rotate-180 opacity-100' : 'opacity-50'
+                                                    }`} />
                                                 </button>
                                                 <AnimatePresence>
                                                     {openDropdown === item.label && (
                                                         <motion.div
-                                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                            initial={{ opacity: 0, y: 8, scale: 0.96 }}
                                                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                                            transition={{ duration: 0.2, ease: 'easeOut' }}
-                                                            className="absolute top-full left-1/2 -translate-x-1/2 mt-4 min-w-[200px] bg-white/95 backdrop-blur-md rounded-2xl shadow-sm border border-gray-200/50 overflow-hidden"
+                                                            exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                                                            transition={{ duration: 0.15, ease: 'easeOut' }}
+                                                            className="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-48 bg-white/95 backdrop-blur-md rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden"
                                                         >
-                                                            <div className="py-2">
-                                                                {item.submenu?.map((subItem, index) => (
+                                                            <div className="py-2 px-1">
+                                                                {item.submenu?.map((subItem) => (
                                                                     <Link
                                                                         key={subItem.label}
                                                                         href={subItem.href}
-                                                                        className="block px-6 py-3 text-sm font-bold text-gray-600 hover:text-[#3054fd] hover:bg-blue-50/50 transition-all"
+                                                                        className="block px-4 py-2.5 text-sm font-semibold text-gray-700 hover:text-[#3054fd] hover:bg-blue-50 rounded-xl transition-all mx-1"
                                                                     >
                                                                         {subItem.label}
                                                                     </Link>
