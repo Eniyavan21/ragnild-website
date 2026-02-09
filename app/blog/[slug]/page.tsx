@@ -73,7 +73,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
                     )}
 
                     {/* Header */}
-                    <header className="mb-12 border-b border-gray-100 pb-12">
+                    <header className="mb-8 border-b border-gray-100 pb-6">
                         {/* <div className="flex items-center gap-3 mb-6">
                             <span className="px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-sm font-medium ring-1 ring-inset ring-blue-600/10">
                                 {post.category}

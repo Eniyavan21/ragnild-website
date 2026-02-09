@@ -5,6 +5,7 @@ import type { SanityImageSource } from '@sanity/image-url'
 interface PortableTextMark {
   _type: string;
   _key: string;
+  href?: string;
 }
 
 interface PortableTextChild {
@@ -68,20 +69,28 @@ function portableTextToMarkdown(blocks: PortableTextBlock[]): string {
 
       // Handle different block styles
       const style = block.style || 'normal';
+      const markDefs = block.markDefs || [];
+
       let content = block.children
         .map((child) => {
           if (!child.text) return '';
 
           let text = child.text;
 
-          // Apply marks (bold, italic, etc.)
+          // Apply marks (bold, italic, links, etc.)
           if (child.marks && child.marks.length > 0) {
             child.marks.forEach((mark) => {
-              if (mark === 'strong') text = `**${text}**`;
-              if (mark === 'em') text = `*${text}*`;
-              if (mark === 'code') text = `\`${text}\``;
-              if (mark === 'underline') text = `<u>${text}</u>`;
-              if (mark === 'strike-through') text = `~~${text}~~`;
+              if (mark === 'strong') { text = `**${text}**`; return; }
+              if (mark === 'em') { text = `*${text}*`; return; }
+              if (mark === 'code') { text = `\`${text}\``; return; }
+              if (mark === 'underline') { text = `<u>${text}</u>`; return; }
+              if (mark === 'strike-through') { text = `~~${text}~~`; return; }
+
+              // Look up annotation marks (links, etc.) from markDefs
+              const markDef = markDefs.find((def) => def._key === mark);
+              if (markDef && markDef._type === 'link' && markDef.href) {
+                text = `[${text}](${markDef.href})`;
+              }
             });
           }
 
