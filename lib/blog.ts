@@ -19,6 +19,8 @@ interface PortableTextBlock {
   _type: string;
   _key: string;
   style?: string;
+  listItem?: 'bullet' | 'number';
+  level?: number;
   children?: PortableTextChild[];
   markDefs?: PortableTextMark[];
   asset?: {
@@ -50,71 +52,115 @@ export type BlogPost = {
   coverImage?: string;
 };
 
-// Convert Sanity Portable Text to Markdown (with image support)
+// Convert inline children to markdown text
+function childrenToMarkdown(block: PortableTextBlock): string {
+  if (!block.children) return '';
+  const markDefs = block.markDefs || [];
+
+  return block.children
+    .map((child) => {
+      if (!child.text) return '';
+
+      let text = child.text;
+
+      // Apply marks (bold, italic, links, etc.)
+      if (child.marks && child.marks.length > 0) {
+        child.marks.forEach((mark) => {
+          if (mark === 'strong') { text = `**${text}**`; return; }
+          if (mark === 'em') { text = `*${text}*`; return; }
+          if (mark === 'code') { text = `\`${text}\``; return; }
+          if (mark === 'underline') { text = `<u>${text}</u>`; return; }
+          if (mark === 'strike-through') { text = `~~${text}~~`; return; }
+
+          // Look up annotation marks (links, etc.) from markDefs
+          const markDef = markDefs.find((def) => def._key === mark);
+          if (markDef && markDef._type === 'link' && markDef.href) {
+            text = `[${text}](${markDef.href})`;
+          }
+        });
+      }
+
+      return text;
+    })
+    .join('');
+}
+
+// Convert Sanity Portable Text to Markdown (with image, list support)
 function portableTextToMarkdown(blocks: PortableTextBlock[]): string {
   if (!blocks || !Array.isArray(blocks)) return '';
 
-  return blocks
-    .map((block) => {
-      // Handle image blocks
-      if (block._type === 'image' && block.asset) {
-        const imageUrl = urlFor(block.asset).width(1200).url();
-        const alt = block.alt || 'Blog image';
-        const caption = block.caption ? `\n*${block.caption}*` : '';
-        return `![${alt}](${imageUrl})${caption}`;
-      }
+  const lines: string[] = [];
+  let numberCounter = 0;
 
-      // Handle text blocks
-      if (!block.children) return '';
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i];
 
-      // Handle different block styles
-      const style = block.style || 'normal';
-      const markDefs = block.markDefs || [];
+    // Handle image blocks
+    if (block._type === 'image' && block.asset) {
+      const imageUrl = urlFor(block.asset).width(1200).url();
+      const alt = block.alt || 'Blog image';
+      const caption = block.caption ? `\n*${block.caption}*` : '';
+      lines.push(`![${alt}](${imageUrl})${caption}`);
+      numberCounter = 0;
+      continue;
+    }
 
-      let content = block.children
-        .map((child) => {
-          if (!child.text) return '';
+    if (!block.children) { numberCounter = 0; continue; }
 
-          let text = child.text;
+    const content = childrenToMarkdown(block);
+    const indent = '  '.repeat(Math.max(0, (block.level || 1) - 1));
 
-          // Apply marks (bold, italic, links, etc.)
-          if (child.marks && child.marks.length > 0) {
-            child.marks.forEach((mark) => {
-              if (mark === 'strong') { text = `**${text}**`; return; }
-              if (mark === 'em') { text = `*${text}*`; return; }
-              if (mark === 'code') { text = `\`${text}\``; return; }
-              if (mark === 'underline') { text = `<u>${text}</u>`; return; }
-              if (mark === 'strike-through') { text = `~~${text}~~`; return; }
+    // Handle list items
+    if (block.listItem === 'bullet') {
+      lines.push(`${indent}- ${content}`);
+      numberCounter = 0;
+      continue;
+    }
 
-              // Look up annotation marks (links, etc.) from markDefs
-              const markDef = markDefs.find((def) => def._key === mark);
-              if (markDef && markDef._type === 'link' && markDef.href) {
-                text = `[${text}](${markDef.href})`;
-              }
-            });
-          }
+    if (block.listItem === 'number') {
+      numberCounter++;
+      lines.push(`${indent}${numberCounter}. ${content}`);
+      continue;
+    }
 
-          return text;
-        })
-        .join('');
+    // Reset number counter when leaving a numbered list
+    numberCounter = 0;
 
-      // Apply block-level formatting
-      switch (style) {
-        case 'h1':
-          return `# ${content}`;
-        case 'h2':
-          return `## ${content}`;
-        case 'h3':
-          return `### ${content}`;
-        case 'h4':
-          return `#### ${content}`;
-        case 'blockquote':
-          return `> ${content}`;
-        default:
-          return content;
-      }
-    })
-    .join('\n\n');
+    // Apply block-level formatting
+    const style = block.style || 'normal';
+    switch (style) {
+      case 'h1':
+        lines.push(`# ${content}`);
+        break;
+      case 'h2':
+        lines.push(`## ${content}`);
+        break;
+      case 'h3':
+        lines.push(`### ${content}`);
+        break;
+      case 'h4':
+        lines.push(`#### ${content}`);
+        break;
+      case 'blockquote':
+        lines.push(`> ${content}`);
+        break;
+      default:
+        lines.push(content);
+    }
+  }
+
+  // Join with proper spacing: single newline between consecutive list items, double elsewhere
+  const result: string[] = [];
+  for (let i = 0; i < lines.length; i++) {
+    result.push(lines[i]);
+    if (i < lines.length - 1) {
+      const currentIsList = lines[i].match(/^\s*[-\d]/);
+      const nextIsList = lines[i + 1].match(/^\s*[-\d]/);
+      result.push(currentIsList && nextIsList ? '\n' : '\n\n');
+    }
+  }
+
+  return result.join('');
 }
 
 // Generate excerpt from content
