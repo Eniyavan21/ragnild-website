@@ -64,7 +64,7 @@ export default function Industries() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: index * 0.1 }}
-                            className="group relative border-b border-gray-200 py-16 grid grid-cols-1 md:grid-cols-12 gap-8 items-center hover:bg-gray-50/50 transition-colors duration-500 ease-in-out px-4 -mx-4 md:px-0 md:mx-0"
+                            className="group relative border-b border-gray-200 py-8 grid grid-cols-1 md:grid-cols-12 gap-8 items-center hover:bg-gray-50/50 transition-colors duration-500 ease-in-out px-4 -mx-4 md:px-0 md:mx-0"
                         >
                             {/* Title */}
                             <div className="md:col-span-3">
