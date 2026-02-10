@@ -37,7 +37,7 @@ export default function Integrations() {
                         <span className="inline-flex items-center justify-center bg-[#3054fd] text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
                             Integrations
                         </span>
-                        <motion.h3
+                        <motion.h2
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
@@ -45,7 +45,7 @@ export default function Integrations() {
                             className="text-3xl md:text-5xl font-normal text-[#0b0f19] tracking-tight leading-[1.1]"
                         >
                             Integrated with the best tools
-                        </motion.h3>
+                        </motion.h2>
                     </div>
 
                     {/* Infinite Marquee Container */}

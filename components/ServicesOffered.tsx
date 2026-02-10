@@ -34,10 +34,10 @@ export default function ServicesOffered() {
                     <span className="inline-flex items-center justify-center bg-[#3054fd] text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
                         Services
                     </span>
-                    <h3 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-[#0b0f19] leading-[1.1] tracking-tight max-w-4xl">
+                    <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-[#0b0f19] leading-[1.1] tracking-tight max-w-4xl">
                         Comprehensive DevOps & Cloud <br className="hidden md:block" />
                         <span className="text-[#3054fd]">Engineering Services</span>
-                    </h3>
+                    </h2>
                     <div className="max-w-2xl mx-auto">
                         <p className="text-[17px] text-gray-500 leading-[1.6] font-medium">
                             Expert services to accelerate your digital transformation journey
@@ -61,9 +61,9 @@ export default function ServicesOffered() {
                                         <CheckCircle2 className="w-6 h-6 text-[#3054fd]" />
                                     </div>
                                     <div className="flex-1">
-                                        <h4 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#3054fd] transition-colors">
+                                        <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-[#3054fd] transition-colors">
                                             {service.title}
-                                        </h4>
+                                        </h3>
                                         <p className="text-gray-600 leading-relaxed">
                                             {service.description}
                                         </p>

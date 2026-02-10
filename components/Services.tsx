@@ -68,10 +68,10 @@ export default function Services() {
                     <span className="inline-flex items-center justify-center bg-[#3054fd] text-white text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-widest">
                         Our Products
                     </span>
-                    <h3 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-[#0b0f19] leading-[1.1] tracking-tight max-w-4xl">
+                    <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-bold text-[#0b0f19] leading-[1.1] tracking-tight max-w-4xl">
                         Crafting success through <br className="hidden md:block" />
                         <span className="text-[#3054fd]">innovative products.</span>
-                    </h3>
+                    </h2>
                     <div className="max-w-2xl mx-auto">
                         <p className="text-[17px] text-gray-500 leading-[1.6] font-medium">
                             Innovative, efficient, and built to solve real problems across your enterprise.
@@ -100,9 +100,9 @@ export default function Services() {
                                 <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mb-4">
                                     <LottieIcon path={product.path} className="w-10 h-10" />
                                 </div>
-                                <h4 className="text-base font-bold text-gray-900 leading-snug">
+                                <h3 className="text-base font-bold text-gray-900 leading-snug">
                                     {product.title}
-                                </h4>
+                                </h3>
                             </motion.button>
                         ))}
                     </div>
@@ -139,11 +139,10 @@ export default function Services() {
                                         {products.map((_, index) => (
                                             <div
                                                 key={index}
-                                                className={`h-1 rounded-full transition-all duration-300 ${
-                                                    index === selectedProduct
+                                                className={`h-1 rounded-full transition-all duration-300 ${index === selectedProduct
                                                         ? 'w-8 bg-[#3054fd]'
                                                         : 'w-1 bg-gray-300'
-                                                }`}
+                                                    }`}
                                             />
                                         ))}
                                     </div>
