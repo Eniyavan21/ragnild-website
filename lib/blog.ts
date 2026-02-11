@@ -145,7 +145,9 @@ function portableTextToMarkdown(blocks: PortableTextBlock[]): string {
         lines.push(`> ${content}`);
         break;
       default:
-        lines.push(content);
+        // Replace leading spaces with non-breaking spaces to preserve indentation
+        // without triggering Markdown code blocks (4 spaces).
+        lines.push(content.replace(/^ +/g, (match) => '\u00A0'.repeat(match.length)).trimEnd());
     }
   }
 
