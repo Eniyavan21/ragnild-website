@@ -22,30 +22,17 @@ export default function Footer() {
                         <p className="text-gray-500 max-w-sm mb-6">
                             Ragnild is a fast-growing, AI-driven digital engineering services company, developing cutting-edge solutions across applications and data.
                         </p>
-                        <div className="text-sm text-gray-400">
+                    </div>
+
+                    <div className="hidden md:block"></div>
+
+                    <div className="col-span-1">
+                        <h4 className="font-bold text-gray-900 mb-6">Contact Us</h4>
+                        <div className="text-sm text-gray-500 space-y-2">
                             <p>Koramangala I Block, Bangalore - 560034</p>
                             <p>Karnataka, India</p>
+                            <p>Email: <a href={`mailto:${process.env.NEXT_PUBLIC_CONTACT_EMAIL}`} className="hover:text-[#3054fd]">{process.env.NEXT_PUBLIC_CONTACT_EMAIL}</a></p>
                         </div>
-                    </div>
-
-                    <div>
-                        <h4 className="font-bold text-gray-900 mb-6">Services</h4>
-                        <ul className="space-y-3 text-sm text-gray-500">
-                            <li><Link href="#" className="hover:text-[#3054fd]">AIOps Platform</Link></li>
-                            <li><Link href="#" className="hover:text-[#3054fd]">Voice AI</Link></li>
-                            <li><Link href="#" className="hover:text-[#3054fd]">DevOps Consulting</Link></li>
-                            <li><Link href="#" className="hover:text-[#3054fd]">Cloud Advisory</Link></li>
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h4 className="font-bold text-gray-900 mb-6">Company</h4>
-                        <ul className="space-y-3 text-sm text-gray-500">
-                            <li><Link href="#" className="hover:text-[#3054fd]">About Us</Link></li>
-                            <li><Link href="#" className="hover:text-[#3054fd]">Careers</Link></li>
-                            <li><Link href="#" className="hover:text-[#3054fd]">Contact</Link></li>
-                            <li><Link href="#" className="hover:text-[#3054fd]">Privacy Policy</Link></li>
-                        </ul>
                     </div>
                 </div>
 
